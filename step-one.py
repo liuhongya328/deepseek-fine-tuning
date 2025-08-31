@@ -46,7 +46,10 @@ print("---完成tokenizing--")
 # 第五步：量化设置
 from transformers import BitsAndBytesConfig
 quantization_config = BitsAndBytesConfig(load_in_8bit=True)
-model = AutoModelForCausalLM.from_pretrained(model_name, device_map="cpu")
+#cpu加载模型
+#model = AutoModelForCausalLM.from_pretrained(model_name, device_map="cpu")
+#GPU加载模型
+model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
 print("---已经完成量化模型的加载--")
 
 # 第六步:lora微调设置
@@ -83,6 +86,7 @@ trainer = Trainer(
 
 trainer.train()
 
+model.save_pretrained("./output_model")
 
 '''执行结果
 /Users/liuhongya/2025/llama/deepseek-fine-tuning/.venv/bin/python /Users/liuhongya/2025/llama/deepseek-fine-tuning/step-one.py 
@@ -103,6 +107,48 @@ trainable params: 136,192 || all params: 1,777,224,192 || trainable%: 0.0077
 ---lora微调设置完毕---
 100%|██████████| 50/50 [8:05:30<00:00, 582.62s/it]
 {'train_runtime': 29130.8404, 'train_samples_per_second': 0.015, 'train_steps_per_second': 0.002, 'train_loss': 15.4565869140625, 'epoch': 9.48}
+
+Process finished with exit code 0
+'''
+
+
+''''
+D:\workspace\PycharmProjects\deepseek-fine-tuning\.venv\Scripts\python.exe D:\workspace\PycharmProjects\deepseek-fine-tuning\step-one.py 
+---加载完成---
+Generating train split: 50 examples [00:00, 8543.07 examples/s]
+数据数量: 50
+train dataset len: 45
+test dataset len: 5
+Map: 100%|██████████| 45/45 [00:00<00:00, 3053.02 examples/s]
+Map: 100%|██████████| 5/5 [00:00<00:00, 839.47 examples/s]
+---完成tokenizing--
+---已经完成量化模型的加载--
+The 8-bit optimizer is not available on your device, only available on CUDA for now.
+trainable params: 136,192 || all params: 1,777,224,192 || trainable%: 0.0077
+---lora微调设置完毕---
+  0%|          | 0/60 [00:00<?, ?it/s]D:\workspace\PycharmProjects\deepseek-fine-tuning\.venv\Lib\site-packages\ torch\ utils\data\dataloader.py:666: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  warnings.warn(warn_msg)
+100%|██████████| 60/60 [35:03<00:00, 35.06s/it]
+{'train_runtime': 2103.3283, 'train_samples_per_second': 0.214, 'train_steps_per_second': 0.029, 'train_loss': 16.105989583333333, 'epoch': 10.0}
+
+Process finished with exit code 0
+'''''
+
+
+'''
+D:\workspace\PycharmProjects\deepseek-fine-tuning\.venv\Scripts\python.exe D:\workspace\PycharmProjects\deepseek-fine-tuning\step-one.py 
+---加载完成---
+数据数量: 50
+train dataset len: 45
+test dataset len: 5
+Map: 100%|██████████| 45/45 [00:00<00:00, 3508.25 examples/s]
+Map: 100%|██████████| 5/5 [00:00<00:00, 1013.12 examples/s]
+---完成tokenizing--
+---已经完成量化模型的加载--
+trainable params: 136,192 || all params: 1,777,224,192 || trainable%: 0.0077
+---lora微调设置完毕---
+100%|██████████| 60/60 [02:27<00:00,  2.45s/it]
+{'train_runtime': 147.0914, 'train_samples_per_second': 3.059, 'train_steps_per_second': 0.408, 'train_loss': 16.10968017578125, 'epoch': 10.0}
 
 Process finished with exit code 0
 '''
